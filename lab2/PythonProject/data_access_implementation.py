@@ -40,6 +40,13 @@ class PatientRepository(IPatientRepository):
     def get_all(self) -> List[Patient]:
         return self.session.query(Patient).all()
 
+    def update(self, patient: Patient) -> Patient:
+        self.session.add(patient)
+        return patient
+
+    def delete(self, patient: Patient) -> None:
+        self.session.delete(patient)
+
 
 class DoctorRepository(IDoctorRepository):
     """Doctor repository implementation"""

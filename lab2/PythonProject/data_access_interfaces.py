@@ -31,6 +31,16 @@ class IPatientRepository(ABC):
         """Get all patients"""
         pass
 
+    @abstractmethod
+    def update(self, patient: Patient) -> Patient:
+        """Update existing patient"""
+        pass
+
+    @abstractmethod
+    def delete(self, patient: Patient) -> None:
+        """Delete patient"""
+        pass
+
 
 class IDoctorRepository(ABC):
     """Interface for Doctor repository"""

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Dental Clinic{% endblock %}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 24px; }
+        nav a { margin-right: 14px; }
+        table { border-collapse: collapse; width: 100%; margin-top: 12px; }
+        th, td { border: 1px solid #ddd; padding: 8px; }
+        th { background: #f2f2f2; text-align: left; }
+        .actions a, .actions button { margin-right: 8px; }
+        .msg-success { color: #096d09; }
+        .msg-error { color: #a10000; }
+        .inline-form { display: inline; }
+        .muted { color: #666; }
+    </style>
+</head>
+<body>
+<nav>
+    <a href="{{ url_for('patients.list_patients') }}">Patients</a>
+    <a href="{{ url_for('list_appointments') }}">Appointments</a>
+</nav>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <ul>
+      {% for category, message in messages %}
+        <li class="msg-{{ category }}">{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+{% block content %}{% endblock %}
+</body>
+</html>
+

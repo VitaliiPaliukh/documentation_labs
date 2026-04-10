@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Appointments{% endblock %}
+{% block content %}
+<h1>Appointments</h1>
+
+{% if appointments %}
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Patient</th>
+            <th>Doctor</th>
+            <th>Schedule Time</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for appointment in appointments %}
+        <tr>
+            <td>{{ appointment.id }}</td>
+            <td>{{ appointment.patient.full_name }}</td>
+            <td>{{ appointment.doctor.full_name }}</td>
+            <td>{{ appointment.schedule_time }}</td>
+            <td>{{ appointment.status.value }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="muted">No appointments found.</p>
+{% endif %}
+{% endblock %}
+
