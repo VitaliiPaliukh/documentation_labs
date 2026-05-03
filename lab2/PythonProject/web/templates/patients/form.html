@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<h1>{{ title }}</h1>
+
+<form method="post">
+    <p>
+        <label for="full_name">Full Name</label><br>
+        <input id="full_name" name="full_name" value="{{ patient.full_name if patient else '' }}" required>
+    </p>
+    <p>
+        <label for="phone">Phone</label><br>
+        <input id="phone" name="phone" value="{{ patient.phone if patient else '' }}" required>
+    </p>
+    <p>
+        <label for="insurance_number">Insurance Number</label><br>
+        <input id="insurance_number" name="insurance_number" value="{{ patient.insurance_number if patient else '' }}">
+    </p>
+    <button type="submit">Save</button>
+    <a href="{{ url_for('patients.list_patients') }}">Cancel</a>
+</form>
+{% endblock %}
+

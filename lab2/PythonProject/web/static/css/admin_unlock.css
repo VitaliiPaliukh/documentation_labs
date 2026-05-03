@@ -1,0 +1,64 @@
+.admin-secret-trigger {
+    position: fixed;
+    bottom: 8px;
+    right: 8px;
+    width: 24px;
+    height: 24px;
+    border: none;
+    background: #000;
+    opacity: 0.02;
+    cursor: default;
+    z-index: 1000;
+}
+
+body.app-locked * {
+    pointer-events: none;
+}
+
+body.app-locked #admin-secret-trigger,
+body.app-locked #admin-unlock-modal,
+body.app-locked #admin-unlock-modal * {
+    pointer-events: auto;
+}
+
+.admin-unlock-modal {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.35);
+    z-index: 1200;
+}
+
+.admin-unlock-modal.visible {
+    display: flex;
+}
+
+.admin-unlock-dialog {
+    width: 320px;
+    background: #fff;
+    border-radius: 6px;
+    padding: 16px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.admin-unlock-dialog h3 {
+    margin: 0 0 8px;
+}
+
+.admin-unlock-error {
+    min-height: 20px;
+}
+
+.failed-login-dimmer {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background: rgba(0, 0, 0, 0);
+    transition: background 180ms ease;
+    z-index: 1100;
+}
+
+
+

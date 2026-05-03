@@ -139,13 +139,52 @@ class PatientManagementService:
             phone=phone,
             insurance_number=insurance_number
         )
-        self.patient_repo.create(patient)
-        self.unit_of_work.commit()
+        try:
+            self.patient_repo.create(patient)
+            self.unit_of_work.commit()
+        except Exception:
+            self.unit_of_work.rollback()
+            raise
         return patient
 
     def get_all_patients(self) -> List[Patient]:
         """Get all patients"""
         return self.patient_repo.get_all()
+
+    def get_patient_by_id(self, patient_id: int) -> Patient:
+        """Get patient by ID"""
+        return self.patient_repo.get_by_id(patient_id)
+
+    def update_patient(self, patient_id: int, full_name: str, phone: str, insurance_number: str) -> Patient:
+        """Update existing patient"""
+        patient = self.patient_repo.get_by_id(patient_id)
+        if not patient:
+            raise ValueError("Patient not found")
+
+        patient.full_name = full_name
+        patient.phone = phone
+        patient.insurance_number = insurance_number
+
+        try:
+            self.patient_repo.update(patient)
+            self.unit_of_work.commit()
+        except Exception:
+            self.unit_of_work.rollback()
+            raise
+        return patient
+
+    def delete_patient(self, patient_id: int) -> None:
+        """Delete patient"""
+        patient = self.patient_repo.get_by_id(patient_id)
+        if not patient:
+            raise ValueError("Patient not found")
+
+        try:
+            self.patient_repo.delete(patient)
+            self.unit_of_work.commit()
+        except Exception:
+            self.unit_of_work.rollback()
+            raise
 
 
 class AppointmentManagementService:
@@ -190,3 +229,8 @@ class AppointmentManagementService:
     def get_all_appointments(self) -> List[Appointment]:
         """Get all appointments"""
         return self.appointment_repo.get_all()
+
+    def get_all_doctors(self) -> List[Doctor]:
+        """Get all doctors"""
+        return self.doctor_repo.get_all()
+
