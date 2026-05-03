@@ -1,7 +1,11 @@
 """Patient MVC controller."""
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, flash, jsonify, redirect, render_template, request, session, url_for
 
 patients_bp = Blueprint("patients", __name__, url_prefix="/patients")
+
+ADMIN_LOGIN = "admin"
+ADMIN_PASSWORD = "admin"
+ADMIN_SESSION_KEY = "admin_unlocked"
 
 
 @patients_bp.route("/")
@@ -23,6 +27,10 @@ def patient_details(patient_id: int):
 
 @patients_bp.route("/create", methods=["GET", "POST"])
 def create_patient():
+    guard_result = _require_admin_unlock()
+    if guard_result is not None:
+        return guard_result
+
     if request.method == "POST":
         full_name = request.form.get("full_name", "").strip()
         phone = request.form.get("phone", "").strip()
@@ -42,6 +50,10 @@ def create_patient():
 
 @patients_bp.route("/<int:patient_id>/edit", methods=["GET", "POST"])
 def edit_patient(patient_id: int):
+    guard_result = _require_admin_unlock()
+    if guard_result is not None:
+        return guard_result
+
     container = _get_container()
     patient = container.patient_management_service.get_patient_by_id(patient_id)
     if not patient:
@@ -78,6 +90,10 @@ def edit_patient(patient_id: int):
 
 @patients_bp.route("/<int:patient_id>/delete", methods=["POST"])
 def delete_patient(patient_id: int):
+    guard_result = _require_admin_unlock()
+    if guard_result is not None:
+        return guard_result
+
     container = _get_container()
     try:
         container.patient_management_service.delete_patient(patient_id)
@@ -94,4 +110,32 @@ def _get_container():
     from flask import g
 
     return g.container
+
+
+@patients_bp.route("/admin/unlock", methods=["POST"])
+def admin_unlock():
+    payload = request.get_json(silent=True) or {}
+    login = (payload.get("login") or "").strip()
+    password = payload.get("password") or ""
+
+    if login == ADMIN_LOGIN and password == ADMIN_PASSWORD:
+        session[ADMIN_SESSION_KEY] = True
+        return jsonify({"success": True})
+
+    return jsonify({"success": False, "message": "Wrong login or password."}), 401
+
+
+@patients_bp.route("/admin/lock", methods=["POST"])
+def admin_lock():
+    session[ADMIN_SESSION_KEY] = False
+    flash("Editing was locked.", "success")
+    return redirect(url_for("patients.list_patients"))
+
+
+def _require_admin_unlock():
+    if session.get(ADMIN_SESSION_KEY):
+        return None
+    flash("Editing is locked. Use hidden admin unlock first.", "error")
+    return redirect(url_for("patients.list_patients"))
+
 

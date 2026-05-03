@@ -1,5 +1,5 @@
 """Flask MVC application for Lab 3."""
-from flask import Flask, g, redirect, render_template, url_for
+from flask import Flask, g, redirect, render_template, session, url_for
 
 from config import DATABASE_URL
 from main import DependencyContainer
@@ -27,10 +27,15 @@ def create_app() -> Flask:
     def home():
         return redirect(url_for("patients.list_patients"))
 
+
     @app.route("/appointments")
     def list_appointments():
         appointments = g.container.appointment_management_service.get_all_appointments()
         return render_template("appointments/list.html", appointments=appointments)
+
+    @app.context_processor
+    def inject_auth_state():
+        return {"is_admin_unlocked": bool(session.get("admin_unlocked", False))}
 
     return app
 

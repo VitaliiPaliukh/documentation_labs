@@ -16,12 +16,45 @@
         .inline-form { display: inline; }
         .muted { color: #666; }
     </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_unlock.css') }}">
 </head>
-<body>
+<body class="{% if not is_admin_unlocked %}app-locked{% endif %}">
 <nav>
     <a href="{{ url_for('patients.list_patients') }}">Patients</a>
     <a href="{{ url_for('list_appointments') }}">Appointments</a>
+    {% if is_admin_unlocked %}
+      <span class="msg-success">Editing: unlocked</span>
+      <form class="inline-form" method="post" action="{{ url_for('patients.admin_lock') }}">
+          <button type="submit">Lock editing</button>
+      </form>
+    {% else %}
+      <span class="muted">Editing: locked</span>
+    {% endif %}
 </nav>
+
+<button id="admin-secret-trigger" class="admin-secret-trigger" type="button" aria-hidden="true" tabindex="-1"></button>
+
+<div id="admin-unlock-modal" class="admin-unlock-modal" aria-hidden="true">
+    <div class="admin-unlock-dialog">
+        <h3>Admin unlock</h3>
+        <p class="muted">Enter login and password to enable editing.</p>
+        <form id="admin-unlock-form">
+            <p>
+                <label for="admin-login">Login</label><br>
+                <input id="admin-login" name="login" required>
+            </p>
+            <p>
+                <label for="admin-password">Password</label><br>
+                <input id="admin-password" name="password" type="password" required>
+            </p>
+            <p class="admin-unlock-error msg-error" id="admin-unlock-error"></p>
+            <button type="submit">Unlock</button>
+            <button id="admin-unlock-cancel" type="button">Cancel</button>
+        </form>
+    </div>
+</div>
+
+<div id="failed-login-dimmer" class="failed-login-dimmer"></div>
 
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
@@ -34,6 +67,12 @@
 {% endwith %}
 
 {% block content %}{% endblock %}
+<script>
+    window.adminUnlockConfig = {
+        unlockUrl: "{{ url_for('patients.admin_unlock') }}"
+    };
+</script>
+<script src="{{ url_for('static', filename='js/admin_unlock.js') }}" defer></script>
 </body>
 </html>
 
