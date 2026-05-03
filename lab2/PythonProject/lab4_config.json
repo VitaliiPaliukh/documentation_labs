@@ -1,0 +1,29 @@
+{
+  "dataset": {
+    "source_url": "https://data.cityofnewyork.us/resource/ssq6-fkht.csv",
+    "output_file": "lab4_output/ssq6-fkht.csv",
+    "download_limit": 1000,
+    "page_size": 200,
+    "timeout_seconds": 30
+  },
+  "strategy": {
+    "name": "console",
+    "console": {
+      "preview_rows": 10
+    },
+    "file": {
+      "path": "lab4_output/ssq6-fkht.jsonl"
+    },
+    "redis": {
+      "host": "localhost",
+      "port": 6379,
+      "db": 0,
+      "key": "lab4:fire-prevention-inspections"
+    },
+    "kafka": {
+      "bootstrap_servers": ["localhost:9092"],
+      "topic": "lab4.fire-prevention-inspections"
+    }
+  }
+}
+

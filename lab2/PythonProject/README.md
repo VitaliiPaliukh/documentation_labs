@@ -113,3 +113,58 @@ python run_web.py
 
 Після запуску відкрийте `http://127.0.0.1:5000`.
 
+## Lab 4 - Strategy pattern
+
+### Призначення
+- Завантаження датасету `ssq6-fkht` з NYC Open Data
+- Збереження отриманих даних у локальний CSV-файл
+- Вивід даних через паттерн `Strategy`
+
+### Де лежить код
+Усі файли для Lab 4 лежать у корені проєкту:
+- `run_lab4.py`
+- `lab4_application.py`
+- `lab4_dataset_reader.py`
+- `lab4_factory.py`
+- `lab4_strategies.py`
+- `lab4_config.json`
+
+### Запуск
+```bash
+python run_lab4.py
+```
+
+### Стратегії виводу (паттерн Strategy)
+4 варіанти без змін основного коду — змінюєш тільки `lab4_config.json`:
+- `console`
+- `file`
+- `redis`
+- `kafka`
+
+### Запуск в обидва сховища (Redis + Kafka) одночасно
+```bash
+python run_lab4_both.py --config lab4_config.json --limit 500
+```
+
+### Додатково
+Для Redis/Kafka потрібні додаткові пакети:
+```bash
+pip install redis kafka-python
+```
+
+### Docker (Redis, Kafka, Zookeeper, Kafka UI)
+```bash
+docker compose up -d
+```
+- Redis: `localhost:6379` (RedisInsight)
+- Kafka: `localhost:9092` (Kafka UI на `http://localhost:8080`)
+- Zookeeper: `localhost:2181`
+
+### Демонстрація результатів
+- **CSV:** `Get-Content .\lab4_output\ssq6-fkht.csv -TotalCount 11`
+- **Redis:** `python check_redis.py` або RedisInsight
+- **Kafka:** `python check_kafka.py` або http://localhost:8080
+
+### Більше інформації
+Див. `LAB4_DEMO.md` для готового сценарію демонстрації викладачу.
+
